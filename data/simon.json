@@ -1,0 +1,18 @@
+{
+    "belmontWalkL": {
+        "tileW": 19,
+        "tileH": 31,
+        "sx": 0,
+        "sy": 0,
+        "w": 57,
+        "h": 31
+    },
+    "belmontWalkR": {
+        "tileW": 19,
+        "tileH": 31,
+        "sx": 70,
+        "sy": 0,
+        "w": 57,
+        "h": 31
+    }
+}

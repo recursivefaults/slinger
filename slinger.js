@@ -1,25 +1,32 @@
 (function() {
     "use strict"
-    var _kAccelration_x = 100.0
+    var _kAccelration_x = 250.0
     var _kSlowdown = 0.05
     var _kVelocity_x_max = 300.0
     var Q = Quintus({development: true});
-    Q.include("Sprites, Input, Scenes");
+    Q.include("Sprites, Input, Scenes, Anim");
     Q.setup("slinger-canvas", {
-        width: 640,
-        height: 480
+        width: 800,
+        height: 600
     });
     Q.controls();
+
+    Q.animations("belmontWalkL", {
+        "walkL": { frames: [2, 1, 0], rate: 1/12, loop: false}
+    });
 
     Q.Sprite.extend("Player", {
         init: function(p) {
                   this._super(p, {
-                      color: "red",
-                      w: 50,
-                      h: 70,
+                      sheet: "belmontWalkL",
+                      sprite: "belmontWalkL",
+                      frame: 0,
+                      x: 400,
+                      y: 300,
                       _velocity_x : 0,
                       _acceleration_x : 0
                   });
+                  this.add("animation");
                   /* Bind events */
                   Q.input.on("left", this, "moveLeft");
                   Q.input.on("leftUp", this, "stopMoving");
@@ -30,14 +37,6 @@
                   Q.input.on("down", this,"aimDown");
                   Q.input.on("action", this,"slice");
               },
-        draw: function(ctx) {
-                  ctx.fillStyle = this.p.color;
-                  ctx.fillRect(-this.p.cx,
-                      -this.p.cy,
-                      this.p.w,
-                      this.p.h);
-              },
-
         step: function(deltaTime) {
                   /* Not moving, slow down! */
                   this.p._velocity_x += this.p._acceleration_x * deltaTime;
@@ -58,6 +57,7 @@
                   },
         moveLeft: function () {
                       this.p._acceleration_x = -_kAccelration_x;
+                      this.play("walkL");
                       console.log("Move Left: " + this.p._velocity_x);
                   },
         moveRight: function () {
@@ -70,12 +70,21 @@
         slice: function () {},
     });
 
-    var player = new Q.Player();
-    Q.gameLoop(function(deltaTime) {
-        player.update(deltaTime);
-        Q.clear();
-        player.render(Q.ctx);
+    Q.scene("InitialScene", function(stage) {
+        var player = new Q.Player({x: 320, y: 240});
+        stage.insert(player);
+    });
 
+    Q.load(["Simon.png", "simon.json"], function() {
+        Q.compileSheets("Simon.png", "simon.json");
+        Q.stageScene("InitialScene");
+        Q.gameLoop(function(deltaTime) {
+            Q.clear();
+            var player = Q("Player").first();
+            player.update(deltaTime);
+            player.render(Q.ctx);
+
+        });
     });
 })();
     
