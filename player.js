@@ -4,6 +4,8 @@ Q.animations("belmontWalkL", {
     "standL": { frames: [0]}
 });
 
+var kAngularTick = 0.02;
+
 Q.Sprite.extend("Player", {
     init: function(p) {
         this._super(p, {
@@ -16,8 +18,13 @@ Q.Sprite.extend("Player", {
             h: 31,
             _velocity_x : 0,
             _acceleration_x : 0,
-            _crosshairRadius: 50
+            _crosshairRadius: 50,
+            _crosshairCx: 0,
+            _crosshairCy: 0,
+            _crossHairAngle: 0,
+            _eyeLevel: 0
         });
+        this.p._eyeLevel = -this.p.cy + 3;
         this.add("animation");
         /* Bind events */
         Q.input.on("left", this, "moveLeft");
@@ -31,18 +38,22 @@ Q.Sprite.extend("Player", {
     },
     draw: function(ctx) {
         this._super(ctx);
+        this.drawCrossHairs(ctx);
+        ctx.strokeRect(-this.p.cx, -this.p.cy, this.p.w, this.p.h);
+    },
+
+    drawCrossHairs: function(ctx) {
         ctx.beginPath();
-        ctx.moveTo(-this.p._crosshairRadius, 0);
-        ctx.lineTo(-this.p._crosshairRadius + 10, 10);
+        ctx.moveTo(this.p._crosshairCx, this.p._crosshairCy);
+        ctx.lineTo(this.p._crosshairCx + 10, this.p._crosshairCy + 10);
         ctx.closePath();
         ctx.stroke();
         ctx.beginPath();
-        ctx.moveTo(-this.p._crosshairRadius, 10);
-        ctx.lineTo(-this.p._crosshairRadius + 10, 0);
+        ctx.moveTo(-this.p._crosshairCx, this.p._crosshairCy + 10);
+        ctx.lineTo(-this.p._crosshairCx + 10, this.p._crosshairCy);
         ctx.closePath();
         ctx.stroke();
         //Bounding box
-        ctx.strokeRect(-this.p.cx, -this.p.cy, this.p.w, this.p.h);
     },
 
     step: function(deltaTime) {
@@ -60,6 +71,9 @@ Q.Sprite.extend("Player", {
             this.p._velocity_x *= _kSlowdown;
         }
         this.p.x += this.p._velocity_x * deltaTime;
+
+        this.p._crosshairCx = (this.p._crosshairRadius * Math.sin(this.p._crossHairAngle));
+        this.p._crosshairCy = (this.p._crosshairRadius * Math.cos(this.p._crossHairAngle));
     },
 
     stopMoving: function () {
@@ -74,7 +88,11 @@ Q.Sprite.extend("Player", {
             console.log("Move Right: " + this.p._velocity_x);
     },
     shoot: function () {},
-    aimUp: function () {},
-    aimDown: function () {},
+    aimUp: function () {
+        this.p._crossHairAngle += kAngularTick;
+    },
+    aimDown: function () {
+        this.p._crossHairAngle -= kAngularTick;
+    },
     slice: function () {},
 });
