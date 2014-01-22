@@ -4,7 +4,7 @@ Q.animations("belmontWalkL", {
     "standL": { frames: [0]}
 });
 
-var kAngularTick = 0.02;
+var kAngularTick = 0.075;
 
 Q.Sprite.extend("Player", {
     init: function(p) {
@@ -21,10 +21,12 @@ Q.Sprite.extend("Player", {
             _crosshairRadius: 50,
             _crosshairCx: 0,
             _crosshairCy: 0,
-            _crossHairAngle: 0,
+            _crossHairAngle: 4.55,
             _eyeLevel: 0
         });
         this.p._eyeLevel = -this.p.cy + 3;
+        this.p._crosshairCx = -this.p._crosshairRadius;
+        this.p._crosshairCy = -this.p._eyeLevel;
         this.add("animation");
         /* Bind events */
         Q.input.on("left", this, "moveLeft");
@@ -49,8 +51,8 @@ Q.Sprite.extend("Player", {
         ctx.closePath();
         ctx.stroke();
         ctx.beginPath();
-        ctx.moveTo(-this.p._crosshairCx, this.p._crosshairCy + 10);
-        ctx.lineTo(-this.p._crosshairCx + 10, this.p._crosshairCy);
+        ctx.moveTo(this.p._crosshairCx, this.p._crosshairCy + 10);
+        ctx.lineTo(this.p._crosshairCx + 10, this.p._crosshairCy);
         ctx.closePath();
         ctx.stroke();
         //Bounding box
@@ -90,6 +92,7 @@ Q.Sprite.extend("Player", {
     shoot: function () {},
     aimUp: function () {
         this.p._crossHairAngle += kAngularTick;
+        console.log(this.p._crossHairAngle);
     },
     aimDown: function () {
         this.p._crossHairAngle -= kAngularTick;
