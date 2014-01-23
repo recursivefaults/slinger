@@ -11,6 +11,7 @@
 
     Q.scene("InitialScene", function(stage) {
         var level = new Q.TileLayer({dataAsset:"levels.json", sheet: "tiles"});
+        stage.collisionLayer(level);
         var player = new Q.Player({x: 400, y: 300});
         stage.insert(player);
         stage.insert(level);
@@ -18,7 +19,7 @@
 
     Q.load(["Simon.png", "simon.json", "tiles.png", "levels.json"], function() {
         Q.compileSheets("Simon.png", "simon.json");
-        Q.sheet("tiles", "tiles.png", {tileW: 32, tileH: 32});
+        Q.sheet("tiles", "tiles.png", {tileW: 32, tileH: 32, type:Q.SPRITE_DEFAULT});
         Q.stageScene("InitialScene");
     });
     

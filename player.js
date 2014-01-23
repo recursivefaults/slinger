@@ -29,6 +29,7 @@ Q.Sprite.extend("Player", {
         this.p._crosshairCy = -this.p._eyeLevel;
         this.add("animation");
         /* Bind events */
+        this.add("2d");
         Q.input.on("left", this, "moveLeft");
         Q.input.on("leftUp", this, "stopMoving");
         Q.input.on("right", this,"moveRight");
