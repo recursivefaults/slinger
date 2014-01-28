@@ -13,7 +13,10 @@
         var level = new Q.TileLayer({dataAsset:"levels.json", sheet: "tiles"});
         stage.collisionLayer(level);
         var player = new Q.Player({x: 400, y: 300});
+        var crossHair = new Q.Crosshair();
+        stage.insert(crossHair);
         stage.insert(player);
+        stage.insert(crossHair, player);
         stage.insert(level);
     });
 
